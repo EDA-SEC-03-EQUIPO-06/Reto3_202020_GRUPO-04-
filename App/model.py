@@ -188,10 +188,21 @@ def getAccidentsBySeverity(analyzer, Date, Severity):
     except:
         return 0
 def getAccidentsBeforeDate(analyzer,Date):
-    print(analyzer['dateIndex'])
-    """for cada_fecha in analyzer['dateIndex']:
-        if analyzer['dateIndex']
-"""
+    fecha_min=minKey(analyzer)
+    #au_d=datetime.datetime.strptime("0000-00-01", '%Y-%m-%d')
+    total=0
+    maxFecha=""
+    maxAc=0
+    while fecha_min<=Date.date():
+        lst = om.get(analyzer['dateIndex'], fecha_min)
+        if lst!=None:
+            total+=listSize(lst)
+            if listSize(lst)>maxAc:
+                maxFecha=fecha_min
+                maxAc=listSize(lst)
+        fecha_min+= datetime.timedelta(days=1)
+    return maxFecha,total
+
 # ==============================
 # Funciones de Comparacion
 # ==============================

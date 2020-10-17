@@ -123,4 +123,4 @@ def getAccidentsBySeverity(analyzer, Date,
 
 def getAccidentsBeforeDate(analyzer, Date):
     Date=datetime.datetime.strptime(Date, '%Y-%m-%d')
-    return model.getAccidentsBeforeDate(analyzer, Date.date())
+    return model.getAccidentsBeforeDate(analyzer, Date)

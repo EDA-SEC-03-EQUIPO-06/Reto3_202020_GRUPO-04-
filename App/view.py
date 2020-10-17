@@ -97,9 +97,14 @@ while True:
             print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
             print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
     elif int(inputs[0]) == 4:
-        print("\nBuscando accidentes en una fecha: ")
+        print("\nBuscando accidentes antes de una fecha: ")
         Date = input("Fecha (YYYY-MM-DD): ")
-        dic = controller.getAccidentsByDate(cont, Date)
+        tup = controller.getAccidentsBeforeDate(cont, Date)
+        print(tup)
+        total=tup[1]
+        print("\nAntes de la fecha seleccionada hubo un total de " + str(total)+ " accidentes.")
+        fecha= tup[0].strftime('%Y-%m-%d')
+        print("\nLa fecha que más accidentes tuvo antes del " + Date + " fue el "+ fecha+".")
     elif int(inputs[0]) == 5:
         pass
     elif int(inputs[0]) == 6:
