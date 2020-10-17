@@ -100,10 +100,9 @@ while True:
         print("\nBuscando accidentes antes de una fecha: ")
         Date = input("Fecha (YYYY-MM-DD): ")
         tup = controller.getAccidentsBeforeDate(cont, Date)
-        print(tup)
+        fecha= tup[0].strftime('%Y-%b-%d')
         total=tup[1]
         print("\nAntes de la fecha seleccionada hubo un total de " + str(total)+ " accidentes.")
-        fecha= tup[0].strftime('%Y-%b-%d')
         print("\nLa fecha que más accidentes tuvo antes del " + Date + " fue el "+ fecha+".")
     elif int(inputs[0]) == 5:
         pass
@@ -112,7 +111,11 @@ while True:
     elif int(inputs[0]) == 7:
         pass
     elif int(inputs[0]) == 8:
-        pass
+        latitud=float(input("Digite la latitud del punto inicial: "))
+        longitud=float(input("Digite la longitud del punto inicial: "))
+        radio=float(input("Digite el radio de búsqueda en km: "))
+        res=controller.getAccidentsBylocation(cont,latitud,longitud,radio)
+        print(res)
     else:
         sys.exit(0)
 sys.exit(0)

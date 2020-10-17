@@ -124,3 +124,6 @@ def getAccidentsBySeverity(analyzer, Date,
 def getAccidentsBeforeDate(analyzer, Date):
     Date=datetime.datetime.strptime(Date, '%Y-%m-%d')
     return model.getAccidentsBeforeDate(analyzer, Date)
+
+def getAccidentsBylocation(analyzer,latitud,longitud,radio):
+    return model.getAccidentsBylocation(analyzer,latitud,longitud,radio)

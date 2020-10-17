@@ -26,6 +26,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as m
 import datetime
+import math
 assert config
 
 """
@@ -52,7 +53,7 @@ def newAnalyzer():
                 'dateIndex': None
                 }
 
-    analyzer['Accidents'] = lt.newList('SINGLE_LINKED', compareIds)
+    analyzer['Accidents'] = lt.newList('ARRAY_LIST', compareIds)
     analyzer['dateIndex'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareDates)
     return analyzer
@@ -189,7 +190,6 @@ def getAccidentsBySeverity(analyzer, Date, Severity):
         return 0
 def getAccidentsBeforeDate(analyzer,Date):
     fecha_min=minKey(analyzer)
-    #au_d=datetime.datetime.strptime("0000-00-01", '%Y-%m-%d')
     total=0
     maxFecha=""
     maxAc=0
@@ -203,6 +203,20 @@ def getAccidentsBeforeDate(analyzer,Date):
         fecha_min+= datetime.timedelta(days=1)
     return maxFecha,total
 
+def getAccidentsBylocation(analyzer,t1,g1,r):
+    dic={0:0,1:0,2:0,3:0,4:0,5:0,6:0}
+    cant=0
+    for cada_accidente in analyzer["Accidents"]["elements"]:
+        t2=float(cada_accidente["Start_Lat"])
+        g2=float(cada_accidente["Start_Lng"])
+        dis = 6371.01 * math.acos((math.sin(math.radians(t1))*math.sin(math.radians(t2)))+(math.cos(math.radians(t1))*math.cos(math.radians(t2))*math.cos(math.radians(g1-g2))))
+        if dis<=r:
+            cant+=1
+            fecha=datetime.datetime.strptime(cada_accidente['Start_Time'], '%Y-%m-%d %H:%M:%S')
+            dia=int(fecha.strftime("%w"))
+            dic[dia]+=1
+    return dic,cant
+    #print(analyzer["Accidents"]["elements"][0])
 # ==============================
 # Funciones de Comparacion
 # ==============================
