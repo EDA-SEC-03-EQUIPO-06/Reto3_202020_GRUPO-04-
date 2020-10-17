@@ -103,7 +103,7 @@ while True:
         print(tup)
         total=tup[1]
         print("\nAntes de la fecha seleccionada hubo un total de " + str(total)+ " accidentes.")
-        fecha= tup[0].strftime('%Y-%m-%d')
+        fecha= tup[0].strftime('%Y-%b-%d')
         print("\nLa fecha que más accidentes tuvo antes del " + Date + " fue el "+ fecha+".")
     elif int(inputs[0]) == 5:
         pass
