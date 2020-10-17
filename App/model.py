@@ -187,7 +187,11 @@ def getAccidentsBySeverity(analyzer, Date, Severity):
             return 0
     except:
         return 0
-
+def getAccidentsBeforeDate(analyzer,Date):
+    print(analyzer['dateIndex'])
+    """for cada_fecha in analyzer['dateIndex']:
+        if analyzer['dateIndex']
+"""
 # ==============================
 # Funciones de Comparacion
 # ==============================

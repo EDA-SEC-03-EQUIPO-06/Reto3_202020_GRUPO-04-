@@ -53,7 +53,11 @@ def printMenu():
     print("1- Inicializar Analizador")
     print("2- Cargar información de accidentes")
     print("3- Buscar Accidentes por Fecha")
-    print("4- Requerimento 2")
+    print("4- Buscar Accidentes antes de una fecha")
+    print("5- Buscar Accidentes en un rango de fechas")
+    print("6- Conocer Estado con más Accidentes")
+    print("7- Conocer Accidentes por rango de horas")
+    print("8- Conocer la zona geográfica más accidentada")
     print("0- Salir")
     print("*******************************************")
 
@@ -92,6 +96,18 @@ while True:
             print("Hubo " + str(dic[2])+ " accidentes de severidad 2")
             print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
             print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
+    elif int(inputs[0]) == 4:
+        print("\nBuscando accidentes en una fecha: ")
+        Date = input("Fecha (YYYY-MM-DD): ")
+        dic = controller.getAccidentsByDate(cont, Date)
+    elif int(inputs[0]) == 5:
+        pass
+    elif int(inputs[0]) == 6:
+        pass
+    elif int(inputs[0]) == 7:
+        pass
+    elif int(inputs[0]) == 8:
+        pass
     else:
         sys.exit(0)
 sys.exit(0)
