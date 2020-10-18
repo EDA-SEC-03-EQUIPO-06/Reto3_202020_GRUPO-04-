@@ -130,6 +130,11 @@ def getAccidentsByRange(analyzer,initialDate,finalDate):
     date = datetime.date.isoformat(info[1])
     return (State, count, date)
     
+    
+def getAccidentsByTime(analyzer,initialTime,finalTime):
+    initialTime = "1111-11-11 "+ initialTime+":00"
+    finalTime = "1111-11-11 "+ finalTime+":00"
+    return model.getAccidentsByTime(analyzer,initialTime,finalTime)
 def test(a,b):
     a = (datetime.datetime.strptime(a,"%H:%M").time())
     #datetime.datetime.

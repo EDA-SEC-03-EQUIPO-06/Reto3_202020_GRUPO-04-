@@ -100,9 +100,7 @@ while True:
         print("Entre {} y {}, el estado en el que mas hubo accidentes fue {}, con un total de {} accidentes. La fecha en la que mas accidentes hubo fue {}".format(initialDate,finalDate,info[0], info[1], info[2]))
     
     elif int(inputs[0]) == 7:
-        a = "09:15"
-        b = "06:37"
-        controller.test(a,b)
+        print(controller.getAccidentsByTime(cont, "00:00", "23:59"))
     else:
         sys.exit(0)
 sys.exit(0)

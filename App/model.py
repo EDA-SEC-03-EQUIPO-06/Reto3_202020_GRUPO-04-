@@ -71,11 +71,65 @@ def addAccident(analyzer, accident):
     """
     lt.addLast(analyzer['Accidents'], accident)
     updateDateIndex(analyzer['dateIndex'], accident)
+    updateTimeIndex(analyzer['timeIndex'],accident)
     return analyzer
     
 ##COMIENZA PRUEBA RIESGOSA##
 
+def updateTimeIndex(map, accident):
+    
+    ocurredtime = accident['Start_Time']
+    ocurredtime = getTime(ocurredtime)
+    entry = om.get(map, ocurredtime)
+    if entry is None:
+        datentry= newDataEntryTime(accident)
+        om.put(map, ocurredtime, datentry)
+    else:
+        datentry = me.getValue(entry)
+    addTimeIndex(datentry, accident)
+    return map
+    
+def addTimeIndex(datentry, accident):
+    
+    lst = datentry['lstaccidents']
+    lt.addLast(lst, accident)
+    SeverityIndex = datentry['SeverityIndex']
+    offentry = m.get(SeverityIndex, accident['Severity'])
+    if (offentry is None):
+        entry = newSeverityEntry(accident['Severity'], accident)
+        lt.addLast(entry['lstseverity'], accident)
+        m.put(SeverityIndex, accident['Severity'], entry)
+    else:
+        entry = me.getValue(offentry)
+        lt.addLast(entry['lstseverity'], accident)
+    
+    return datentry
+    
+    
 
+def getTime(ocurredtime):
+    a = datetime.datetime.strptime(ocurredtime, '%Y-%m-%d %H:%M:%S').time()
+    time = datetime.time.isoformat(a)
+    time = time[0:5]
+    minutes = int(time[3:5])
+    if minutes >= 30:
+        minutes = "30"
+    else:
+        minutes = "00"
+    time = time[0:3]
+    time += minutes
+    time = datetime.datetime.strptime(time,'%H:%M').time()
+    return time
+
+def newDataEntryTime(accident):
+    entry = {'SeverityIndex': None, 'lstaccidents': None}
+    entry['SeverityIndex'] = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareSeverity)
+    entry['lstaccidents'] = lt.newList('SINGLE_LINKED', compareDates)
+    return entry
+    
+####
 def updateDateIndex(map, accident):
     """
     Se toma la fecha del crimen y se busca si ya existe en el arbol
@@ -266,6 +320,34 @@ def count_states(statemap, list, checklist):
 def newStateCount(state):
     return {"State": state, "Count": 0}
         
+def getAccidentsByTime(analyzer, initialTime, finalTime):
+    
+    initialTime = getTime(initialTime)
+    finalTime = getTime(finalTime)
+    
+    lst = om.values(analyzer["timeIndex"], initialTime,finalTime)
+    lstiterator = it.newIterator(lst)
+    sev_1 = 0
+    sev_2 = 0
+    sev_3 = 0
+    sev_4 = 0
+    while it.hasNext(lstiterator):
+        time = it.next(lstiterator)
+        timemap = om.get(analyzer["timeIndex"],time)
+        map = me.getValue(timemap)
+        accidents = map["SeverityIndex"]
+        print(accidents)
+        if m.get(accidents,"1") is not None:
+            sev_1 += lt.size(me.getValue(m.get(accidents,"1"))["lstseverity"])
+        if m.get(accidents,"2") is not None:
+            sev_2 += lt.size(me.getValue(m.get(accidents,"2"))["lstseverity"])
+        if m.get(accidents,"3") is not None:
+            sev_3 += lt.size(me.getValue(m.get(accidents,"3"))["lstseverity"])
+        if m.get(accidents,"4") is not None:
+            sev_4 += lt.size(me.getValue(m.get(accidents,"4"))["lstseverity"])
+    return [sev_1,sev_2,sev_3,sev_4] 
+        
+    
     
     
 
@@ -304,7 +386,8 @@ def compareSeverity(severity1, severity2):
     Compara dos ids de libros, id es un identificador
     y entry una pareja llave-valor
     """
-    severity=me.getKey(severity2)
+    severity1 = int(severity1)
+    severity=int(me.getKey(severity2))
     if (severity1 == severity):
         return 0
     elif (severity1 > severity):
