@@ -120,3 +120,19 @@ def getAccidentsBySeverity(analyzer, Date,
     Date = datetime.datetime.strptime(Date, '%Y-%m-%d')
     return model.getAccidentsBySeverity(analyzer, Date.date(),
                                       Severity)
+    
+def getAccidentsByRange(analyzer,initialDate,finalDate):
+    initialDate = datetime.datetime.strptime(initialDate, '%Y-%m-%d')
+    finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
+    info = model.getAccidentsByRange(analyzer,initialDate.date(),finalDate.date())
+    State = info[0]["State"]
+    count = info[0]["Count"]
+    date = datetime.date.isoformat(info[1])
+    return (State, count, date)
+    
+def test(a,b):
+    a = (datetime.datetime.strptime(a,"%H:%M").time())
+    #datetime.datetime.
+    print(a)
+    b = datetime.datetime.strptime(b,"%H:%M").time()
+    print(a > b)

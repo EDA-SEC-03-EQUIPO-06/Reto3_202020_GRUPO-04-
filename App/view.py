@@ -92,6 +92,17 @@ while True:
             print("Hubo " + str(dic[2])+ " accidentes de severidad 2")
             print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
             print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
+            
+    elif int(inputs[0]) == 6:
+        initialDate = input("Fecha inicial (YYYY-MM-DD): ")
+        finalDate = input("Fecha final (YYYY-MM-DD): ")
+        info = controller.getAccidentsByRange(cont,initialDate,finalDate)
+        print("Entre {} y {}, el estado en el que mas hubo accidentes fue {}, con un total de {} accidentes. La fecha en la que mas accidentes hubo fue {}".format(initialDate,finalDate,info[0], info[1], info[2]))
+    
+    elif int(inputs[0]) == 7:
+        a = "09:15"
+        b = "06:37"
+        controller.test(a,b)
     else:
         sys.exit(0)
 sys.exit(0)

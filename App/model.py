@@ -25,6 +25,8 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as m
+from DISClib.DataStructures import listiterator as it
+from DISClib.Algorithms.Sorting import selectionsort as ins
 import datetime
 assert config
 
@@ -49,11 +51,14 @@ def newAnalyzer():
     Retorna el analizador inicializado.
     """
     analyzer = {'Accidents': None,
-                'dateIndex': None
+                'dateIndex': None,
+                'timeIndex': None,
                 }
 
     analyzer['Accidents'] = lt.newList('SINGLE_LINKED', compareIds)
     analyzer['dateIndex'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareDates)
+    analyzer['timeIndex'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareDates)
     return analyzer
 
@@ -67,6 +72,8 @@ def addAccident(analyzer, accident):
     lt.addLast(analyzer['Accidents'], accident)
     updateDateIndex(analyzer['dateIndex'], accident)
     return analyzer
+    
+##COMIENZA PRUEBA RIESGOSA##
 
 
 def updateDateIndex(map, accident):
@@ -98,7 +105,9 @@ def addDateIndex(datentry, accident):
     lst = datentry['lstaccidents']
     lt.addLast(lst, accident)
     SeverityIndex = datentry['SeverityIndex']
+    StateIndex = datentry['StateIndex']
     offentry = m.get(SeverityIndex, accident['Severity'])
+    offentry1 = m.get(StateIndex, accident['State'])
     if (offentry is None):
         entry = newSeverityEntry(accident['Severity'], accident)
         lt.addLast(entry['lstseverity'], accident)
@@ -106,6 +115,13 @@ def addDateIndex(datentry, accident):
     else:
         entry = me.getValue(offentry)
         lt.addLast(entry['lstseverity'], accident)
+    if offentry1 is None:
+        entry1 = newStateEntry(accident['State'])
+        lt.addLast(entry1['lststate'], accident)
+        m.put(StateIndex,accident['State'],entry1)
+    else:
+        entry1 = me.getValue(offentry1)
+        lt.addLast(entry1['lststate'], accident)
     return datentry
 
 def newDataEntry(accident):
@@ -113,10 +129,14 @@ def newDataEntry(accident):
     Crea una entrada en el indice por fechas, es decir en el arbol
     binario.
     """
-    entry = {'SeverityIndex': None, 'lstaccidents': None}
+    entry = {'SeverityIndex': None,'StateIndex': None , 'lstaccidents': None}
     entry['SeverityIndex'] = m.newMap(numelements=30,
                                      maptype='PROBING',
                                      comparefunction=compareSeverity)
+    entry['StateIndex'] = m.newMap(numelements=100,    #Mapa cuyas llaves son cada estado.
+                                   maptype= 'PROBING',
+                                   comparefunction= compareStates)
+    
     entry['lstaccidents'] = lt.newList('SINGLE_LINKED', compareDates)
     return entry
 
@@ -128,6 +148,15 @@ def newSeverityEntry(Severitygrp, accident):
     entry = {'Severity': None, 'lstseverity': None}
     entry['Severity'] = Severitygrp
     entry['lstseverity'] = lt.newList('SINGLELINKED', compareSeverity)
+    return entry
+    
+def newStateEntry(state):
+    """
+    Crea una entrada en el indice por cada estado.
+    """
+    entry = {"State": None, "lststate": None} #State es la llave, lststate son los accidentes en ese estado
+    entry["State"] = state
+    entry["lststate"] = lt.newList('SINGLELINKED', compareStates)
     return entry
 # ==============================
 # Funciones de consulta
@@ -187,6 +216,58 @@ def getAccidentsBySeverity(analyzer, Date, Severity):
             return 0
     except:
         return 0
+        
+def getAccidentsByRange(analyzer,initialDate,finalDate):
+    """
+    Retorna una 'estructura' con los crimenes dentro de un rango
+    """
+    
+    lst = om.values(analyzer["dateIndex"], initialDate, finalDate)
+    lstiterator = it.newIterator(lst)
+    most_accidents_date = lt.getElement(lst,1)
+    
+    states_count = lt.newList("ARRAY_LIST", compareCount) #Falta crear la comparacion
+    checklist = lt.newList("ARRAY_LIST", compareNames) #Falta comparacion
+    
+    while it.hasNext(lstiterator):
+        date = it.next(lstiterator)
+        mapdate = om.get(analyzer["dateIndex"],date)
+        map = me.getValue(mapdate)
+        accidents = map["lstaccidents"]
+        if lt.size(accidents) > lt.size((me.getValue(om.get(analyzer["dateIndex"],most_accidents_date)))["lstaccidents"]):
+            most_accidents_date = date
+        statemap = map["StateIndex"]
+        count_states(statemap,states_count,checklist)
+        
+    ins.selectionSort(states_count,greater_function)
+    
+    return (lt.getElement(states_count,1), most_accidents_date)
+
+def greater_function(element1,element2):
+    if element1["Count"] > element2["Count"]:
+        return True
+    else:
+        return False
+        
+def count_states(statemap, list, checklist):
+        states = m.keySet(statemap)
+        ite = it.newIterator(states)
+        while it.hasNext(ite):
+            state = it.next(ite)
+            pos = lt.isPresent(checklist,state)
+            if pos == 0:
+                newStateNumber = newStateCount(state)
+                lt.addLast(list,newStateNumber)
+                lt.addLast(checklist,state)
+            stateNumber = lt.getElement(list, pos)
+            stateNumber["Count"] += lt.size((me.getValue(m.get(statemap, state)))["lststate"])
+            
+    
+def newStateCount(state):
+    return {"State": state, "Count": 0}
+        
+    
+    
 
 # ==============================
 # Funciones de Comparacion
@@ -227,6 +308,31 @@ def compareSeverity(severity1, severity2):
     if (severity1 == severity):
         return 0
     elif (severity1 > severity):
+        return 1
+    else:
+        return -1
+        
+def compareStates(state1,state2):
+    state = me.getKey(state2)
+    if state1 == state:
+        return 0
+    elif state1 > state:
+        return 1
+    else:
+        return -1
+
+def compareCount(element1, element2):
+    if element1["Count"] == element2["Count"]:
+        return 0
+    elif element1["Count"] > element2["Count"]:
+        return 1
+    else:
+        return -1
+        
+def compareNames(element1,element2):
+    if element1 == element2: 
+        return 0
+    elif element1 == element2:
         return 1
     else:
         return -1
