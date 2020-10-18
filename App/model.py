@@ -188,6 +188,16 @@ def getAccidentsBySeverity(analyzer, Date, Severity):
     except:
         return 0
 
+def getAccidentsbyrange(analyzer, inicialdate, finaldate):
+    x = inicialdate
+    lst = {1: 0, 2: 0, 3: 0, 4: 0}
+    while x<=finaldate:
+        for i in range(1,5):
+            accidents = getAccidentsBySeverity(analyzer, x, i)
+            lst[i] = int(lst[i]) + int(accidents)
+        x+=datetime.timedelta(days=1)
+    return lst
+
 # ==============================
 # Funciones de Comparacion
 # ==============================

@@ -92,6 +92,28 @@ while True:
             print("Hubo " + str(dic[2])+ " accidentes de severidad 2")
             print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
             print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
+    elif int(inputs[0]) == 4:
+        print("\nBuscando accidentes en un rango de fecha: ")
+        inicialdate = input("Fecha inicial (YYYY-MM-DD): ")
+        finaldate = input("Fecha fianl (YYYY-MM-DD): ")
+        dic = controller.getAccidentsbyrange(cont, inicialdate, finaldate)
+        total= dic[1]+dic[2] + dic[3]+ dic[4]
+        maximo =()
+        mayor = 0
+        for i in range(1,5):
+            if dic[i]>mayor:
+                mayor = dic[i]
+                maximo = (i)
+        if dic[1]==0 and dic[2]==0 and dic[3]==0 and dic[4]==0:
+            print("\nNo se encontraron accidentes en esa fecha")
+        else:
+            print("\nEn la fecha seleccionada hubo un total de " + str(total)+ " accidentes ")
+            print("la categoria con mayor numero de accidentes es " + str(maximo)+ " con un total de "+ str(mayor))
+            print("Hubo " + str(dic[1])+ " accidentes de severidad 1")
+            print("Hubo " + str(dic[2])+ " accidentes de severidad 2")
+            print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
+            print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
+    
     else:
         sys.exit(0)
 sys.exit(0)
