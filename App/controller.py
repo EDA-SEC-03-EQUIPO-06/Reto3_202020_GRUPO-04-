@@ -127,3 +127,6 @@ def getAccidentsBeforeDate(analyzer, Date):
 
 def getAccidentsBylocation(analyzer,latitud,longitud,radio):
     return model.getAccidentsBylocation(analyzer,latitud,longitud,radio)
+
+def getAccidentsByHourRange(analyzer,h1,h2):
+    return model.getAccidentsByHourRange(analyzer,h1,h2)

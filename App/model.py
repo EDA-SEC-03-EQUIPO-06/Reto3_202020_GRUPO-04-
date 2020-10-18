@@ -22,6 +22,7 @@
  """
 import config
 from DISClib.ADT import list as lt
+from DISClib.DataStructures import listiterator as it
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as m
@@ -206,7 +207,10 @@ def getAccidentsBeforeDate(analyzer,Date):
 def getAccidentsBylocation(analyzer,t1,g1,r):
     dic={0:0,1:0,2:0,3:0,4:0,5:0,6:0}
     cant=0
-    for cada_accidente in analyzer["Accidents"]["elements"]:
+    iterator=it.newIterator(analyzer["Accidents"])
+    #for cada_accidente in analyzer["Accidents"]["elements"]:
+    while it.hasNext(iterator):
+        cada_accidente=it.next(iterator)
         t2=float(cada_accidente["Start_Lat"])
         g2=float(cada_accidente["Start_Lng"])
         dis = 6371.01 * math.acos((math.sin(math.radians(t1))*math.sin(math.radians(t2)))+(math.cos(math.radians(t1))*math.cos(math.radians(t2))*math.cos(math.radians(g1-g2))))
@@ -217,6 +221,21 @@ def getAccidentsBylocation(analyzer,t1,g1,r):
             dic[dia]+=1
     return dic,cant
     #print(analyzer["Accidents"]["elements"][0])
+
+def getAccidentsByHourRange(analyzer,h1,h2):
+    dic={1:0,2:0,3:0,4:0}
+    h1=datetime.datetime.strptime(h1,"%H:%M:%S")
+    h2=datetime.datetime.strptime(h2,"%H:%M:%S")
+    iterator=it.newIterator(analyzer["Accidents"])
+    #for cada_accidente in analyzer["Accidents"]["elements"]:
+    while it.hasNext(iterator):
+        cada_accidente=it.next(iterator)
+        hora=datetime.datetime.strptime(cada_accidente["Start_Time"][11:19],"%H:%M:%S")
+        if h1<=hora and h2>=hora:
+            dic[int(cada_accidente['Severity'])]+=1
+    return dic
+
+        
 # ==============================
 # Funciones de Comparacion
 # ==============================

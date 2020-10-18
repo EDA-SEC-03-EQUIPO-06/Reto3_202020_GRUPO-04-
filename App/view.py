@@ -109,7 +109,21 @@ while True:
     elif int(inputs[0]) == 6:
         pass
     elif int(inputs[0]) == 7:
-        pass
+        h1=input("Digite la hora inicial en formato HH:MM:SS: ")
+        h2=input("Digite la hora final en formato HH:MM:SS: ")
+        dic=controller.getAccidentsByHourRange(cont,h1,h2)
+        total= dic[1]+dic[2] + dic[3]+ dic[4]
+        if len(dic)==None:
+            print("No se encontraron accidentes en el rango de horas")
+        else:
+            print("\nEn el rango de horas seleccionado hubo un total de " + str(total)+ " accidentes ")
+            print("Hubo " + str(dic[1])+ " accidentes de severidad 1")
+            print("Hubo " + str(dic[2])+ " accidentes de severidad 2")
+            print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
+            print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
+        if controller.AccidentsSize(cont)>0:
+            porcentaje=(total*100)/(controller.AccidentsSize(cont))
+            print("""El porcentaje de accidentes sucedidos en el rango de horas elegido\ncomparado con las cantidad total de accidentes es: {0} %""".format(str(round(porcentaje,2))))
     elif int(inputs[0]) == 8:
         latitud=float(input("Digite la latitud del punto inicial: "))
         longitud=float(input("Digite la longitud del punto inicial: "))
