@@ -54,6 +54,8 @@ def printMenu():
     print("2- Cargar información de accidentes")
     print("3- Buscar Accidentes por Fecha")
     print("4- Requerimento 2")
+    print("6- Buscar estado con mas accidentes en un rango de fechas")
+    print("7- Buscar accidentes por rango de horas")
     print("0- Salir")
     print("*******************************************")
 
@@ -92,6 +94,19 @@ while True:
             print("Hubo " + str(dic[2])+ " accidentes de severidad 2")
             print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
             print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
+            
+    elif int(inputs[0]) == 6:
+        initialDate = input("Fecha inicial (YYYY-MM-DD): ")
+        finalDate = input("Fecha final (YYYY-MM-DD): ")
+        info = controller.getAccidentsByRange(cont,initialDate,finalDate)
+        print("Entre {} y {}, el estado en el que mas hubo accidentes fue {}, con un total de {} accidentes. La fecha en la que mas accidentes hubo fue {}".format(initialDate,finalDate,info[0], info[1], info[2]))
+    
+    elif int(inputs[0]) == 7:
+        inic = input("Ingrese el rango inferior de horas que desea buscar en formato HH:MM: ")
+        final = input("Ingrese el rango superior de horas que desea buscar en formato HH:MM: ")
+        info = controller.getAccidentsByTime(cont, inic, final)
+        print("\nPara el rango horario seleccionado existen:\n■ {} Accidentes de Severidad 1\n■ {} Accidentes de Severidad 2\n■ {} Accidentes de Severidad 3\n■ {} Accidentes de Severidad 4".format(info[0],info[1],info[2],info[3]))
+        
     else:
         sys.exit(0)
 sys.exit(0)
