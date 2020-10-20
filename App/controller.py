@@ -120,7 +120,20 @@ def getAccidentsBySeverity(analyzer, Date,
     Date = datetime.datetime.strptime(Date, '%Y-%m-%d')
     return model.getAccidentsBySeverity(analyzer, Date.date(),
                                       Severity)
-    
+
+def getAccidentsbyrange(analyzer, inicialdate, finaldate):
+    inicialdate = datetime.datetime.strptime(inicialdate, '%Y-%m-%d')
+    finaldate = datetime.datetime.strptime(finaldate, '%Y-%m-%d')
+    dic = model.getAccidentsbyrange(analyzer, inicialdate.date(), finaldate.date())
+    total= dic[1]+dic[2] + dic[3]+ dic[4]
+    maximo =()
+    mayor = 0
+    for i in range(1,5):
+        if dic[i]>mayor:
+            mayor = dic[i]
+            maximo = (i)
+    return (dic,total, maximo, mayor)
+
 def getAccidentsByRange(analyzer,initialDate,finalDate):
     initialDate = datetime.datetime.strptime(initialDate, '%Y-%m-%d')
     finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
@@ -135,3 +148,4 @@ def getAccidentsByTime(analyzer,initialTime,finalTime):
     initialTime = "1111-11-11 "+ initialTime+":00"
     finalTime = "1111-11-11 "+ finalTime+":00"
     return model.getAccidentsByTime(analyzer,initialTime,finalTime)
+

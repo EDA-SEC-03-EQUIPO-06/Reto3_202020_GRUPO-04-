@@ -279,9 +279,21 @@ def getAccidentsBySeverity(analyzer, Date, Severity):
             return 0
     except:
         return 0
+
+#Req 3
+def getAccidentsbyrange(analyzer, inicialdate, finaldate):
+    x = inicialdate
+    lst = {1: 0, 2: 0, 3: 0, 4: 0}
+    while x<=finaldate:
+        for i in range(1,5):
+            accidents = getAccidentsBySeverity(analyzer, x, i)
+            lst[i] = int(lst[i]) + int(accidents)
+        x+=datetime.timedelta(days=1)
+    return lst
         
+
 """Inicio de Requerimento 4"""
-        
+
 def getAccidentsByRange(analyzer,initialDate,finalDate):
     """
     Retorna una 'estructura' con los crimenes dentro de un rango
@@ -358,6 +370,7 @@ def getAccidentsByTime(analyzer, initialTime, finalTime):
             sev_4 += lt.size(me.getValue(m.get(accidents,"4"))["lstseverity"])
     return [sev_1,sev_2,sev_3,sev_4] 
         
+
 
 # ==============================
 # Funciones de Comparacion
