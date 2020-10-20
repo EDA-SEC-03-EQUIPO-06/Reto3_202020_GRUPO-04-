@@ -55,7 +55,7 @@ def printMenu():
     print("3- Buscar Accidentes por Fecha")
     print("4- Buscar Accidentes antes de una fecha")
     print("5- Buscar Accidentes en un rango de fechas")
-    print("6- Conocer Estado con más Accidentes")
+    print("6- Buscar estado con mas accidentes en un rango de fechas")
     print("7- Conocer Accidentes por rango de horas")
     print("8- Conocer la zona geográfica más accidentada")
     print("0- Salir")
@@ -96,6 +96,7 @@ while True:
             print("Hubo " + str(dic[2])+ " accidentes de severidad 2")
             print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
             print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
+    
     elif int(inputs[0]) == 4:
         print("\nBuscando accidentes antes de una fecha: ")
         Date = input("Fecha (YYYY-MM-DD): ")
@@ -104,32 +105,44 @@ while True:
         total=tup[1]
         print("\nAntes de la fecha seleccionada hubo un total de " + str(total)+ " accidentes.")
         print("\nLa fecha que más accidentes tuvo antes del " + Date + " fue el "+ fecha+".")
+    
     elif int(inputs[0]) == 5:
-        pass
-    elif int(inputs[0]) == 6:
-        pass
-    elif int(inputs[0]) == 7:
-        h1=input("Digite la hora inicial en formato HH:MM:SS: ")
-        h2=input("Digite la hora final en formato HH:MM:SS: ")
-        dic=controller.getAccidentsByHourRange(cont,h1,h2)
-        total= dic[1]+dic[2] + dic[3]+ dic[4]
-        if len(dic)==None:
-            print("No se encontraron accidentes en el rango de horas")
+        print("\nBuscando accidentes en un rango de fechas: ")
+        inicialdate = input("Fecha inicial (YYYY-MM-DD): ")
+        finaldate = input("Fecha fianl (YYYY-MM-DD): ")
+        dic = controller.getAccidentsbyrange(cont, inicialdate, finaldate)
+        if dic[0][1]==0 and dic[0][2]==0 and dic[0][3]==0 and dic[0][4]==0:
+            print("\nNo se encontraron accidentes en esa fecha")
         else:
-            print("\nEn el rango de horas seleccionado hubo un total de " + str(total)+ " accidentes ")
-            print("Hubo " + str(dic[1])+ " accidentes de severidad 1")
-            print("Hubo " + str(dic[2])+ " accidentes de severidad 2")
-            print("Hubo " + str(dic[3])+ " accidentes de severidad 3")
-            print("Hubo " + str(dic[4])+ " accidentes de severidad 4")
-        if controller.AccidentsSize(cont)>0:
-            porcentaje=(total*100)/(controller.AccidentsSize(cont))
-            print("""El porcentaje de accidentes sucedidos en el rango de horas elegido\ncomparado con las cantidad total de accidentes es: {0} %""".format(str(round(porcentaje,2))))
+            print("\nEn la fecha seleccionada hubo un total de " + str(dic[1])+ " accidentes ")
+            print("La categoria con mayor numero de accidentes es " + str(dic[2])+ " con un total de "+ str(dic[3]))
+            print("Hubo " + str(dic[0][1])+ " accidentes de severidad 1")
+            print("Hubo " + str(dic[0][2])+ " accidentes de severidad 2")
+            print("Hubo " + str(dic[0][3])+ " accidentes de severidad 3")
+            print("Hubo " + str(dic[0][4])+ " accidentes de severidad 4")
+    elif int(inputs[0]) == 6:
+        print("\nBuscando estado más accidentado en un rango de fechas: ")
+        initialDate = input("Fecha inicial (YYYY-MM-DD): ")
+        finalDate = input("Fecha final (YYYY-MM-DD): ")
+        info = controller.getAccidentsByRange(cont,initialDate,finalDate)
+        print("Entre {} y {}, el estado en el que mas hubo accidentes fue {}, con un total de {} accidentes. La fecha en la que mas accidentes hubo fue {}".format(initialDate,finalDate,info[0], info[1], info[2]))
+    
+    elif int(inputs[0]) == 7:
+        print("\nBuscando accidentes en un rango de horas: ")
+        inic = input("Ingrese el rango inferior de horas que desea buscar en formato HH:MM: ")
+        final = input("Ingrese el rango superior de horas que desea buscar en formato HH:MM: ")
+        info = controller.getAccidentsByTime(cont, inic, final)
+        print("\nPara el rango horario seleccionado existen:\n■ {} Accidentes de Severidad 1\n■ {} Accidentes de Severidad 2\n■ {} Accidentes de Severidad 3\n■ {} Accidentes de Severidad 4".format(info[0],info[1],info[2],info[3]))
+   
     elif int(inputs[0]) == 8:
+        print("\nBuscando accidentes en el radio de una locación")
         latitud=float(input("Digite la latitud del punto inicial: "))
         longitud=float(input("Digite la longitud del punto inicial: "))
         radio=float(input("Digite el radio de búsqueda en km: "))
         res=controller.getAccidentsBylocation(cont,latitud,longitud,radio)
         print(res)
+        print("\nEn el radio de {} km medidos desde {} de latitud y {} de longitud se encontraron {} accidentes:".format(radio,latitud,longitud,res[1]))
+        print("Hubo {} accidentes el día domingo\n■ {} accidentes el día lunes\n■ {} accidentes el día martes\n■ {} accidentes el día miércoles\n■ {} accidentes el día jueves {} accidentes el día viernes\n■  {} accidentes el día sábado\n■ ".format(res[0][0],res[0][1],res[0][2],res[0][3],res[0][4],res[0][5],res[0][6]))
     else:
         sys.exit(0)
 sys.exit(0)
