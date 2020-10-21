@@ -286,17 +286,16 @@ def getAccidentsBeforeDate(analyzer,Date):
     total=0
     maxFecha=""
     maxAc=0
-    while fecha_min<=Date.date():
+    while fecha_min<Date.date():
         lst = om.get(analyzer['dateIndex'], fecha_min)
         if lst!=None:
-            total+=listSize(lst)
+            total+=listSize(lst["value"]["lstaccidents"])
             if listSize(lst)>maxAc:
                 maxFecha=fecha_min
                 maxAc=listSize(lst)
         fecha_min+= datetime.timedelta(days=1)
+        
     return maxFecha,total
-
-
 
 #Req 3
 def getAccidentsbyrange(analyzer, inicialdate, finaldate):

@@ -141,7 +141,7 @@ def getAccidentsbyrange(analyzer, inicialdate, finaldate):
 def getAccidentsByState(analyzer,initialDate,finalDate):
     initialDate = datetime.datetime.strptime(initialDate, '%Y-%m-%d')
     finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
-    info = model.getAccidentsByRange(analyzer,initialDate.date(),finalDate.date())
+    info = model.getAccidentsByState(analyzer,initialDate.date(),finalDate.date())
     State = info[0]["State"]
     count = info[0]["Count"]
     date = datetime.date.isoformat(info[1])
