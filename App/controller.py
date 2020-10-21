@@ -118,8 +118,12 @@ def getAccidentsBySeverity(analyzer, Date,
     fecha determinada
     """
     Date = datetime.datetime.strptime(Date, '%Y-%m-%d')
-    return model.getAccidentsBySeverity(analyzer, Date.date(),
-                                      Severity)
+    return model.getAccidentsBySeverity(analyzer, Date.date(),Severity)
+
+def getAccidentsBeforeDate(analyzer, Date):
+    Date=datetime.datetime.strptime(Date, '%Y-%m-%d')
+    return model.getAccidentsBeforeDate(analyzer, Date)
+
 
 def getAccidentsbyrange(analyzer, inicialdate, finaldate):
     inicialdate = datetime.datetime.strptime(inicialdate, '%Y-%m-%d')
@@ -134,10 +138,10 @@ def getAccidentsbyrange(analyzer, inicialdate, finaldate):
             maximo = (i)
     return (dic,total, maximo, mayor)
 
-def getAccidentsByRange(analyzer,initialDate,finalDate):
+def getAccidentsByState(analyzer,initialDate,finalDate):
     initialDate = datetime.datetime.strptime(initialDate, '%Y-%m-%d')
     finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
-    info = model.getAccidentsByRange(analyzer,initialDate.date(),finalDate.date())
+    info = model.getAccidentsByState(analyzer,initialDate.date(),finalDate.date())
     State = info[0]["State"]
     count = info[0]["Count"]
     date = datetime.date.isoformat(info[1])
@@ -148,4 +152,7 @@ def getAccidentsByTime(analyzer,initialTime,finalTime):
     initialTime = "1111-11-11 "+ initialTime+":00"
     finalTime = "1111-11-11 "+ finalTime+":00"
     return model.getAccidentsByTime(analyzer,initialTime,finalTime)
+
+def getAccidentsBylocation(analyzer,latitud,longitud,radio):
+    return model.getAccidentsBylocation(analyzer,latitud,longitud,radio)
 

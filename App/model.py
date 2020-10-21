@@ -22,12 +22,14 @@
  """
 import config
 from DISClib.ADT import list as lt
+from DISClib.DataStructures import listiterator as it
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as m
 from DISClib.DataStructures import listiterator as it
 from DISClib.Algorithms.Sorting import selectionsort as ins
 import datetime
+import math
 assert config
 
 """
@@ -55,7 +57,7 @@ def newAnalyzer():
                 'timeIndex': None,
                 }
 
-    analyzer['Accidents'] = lt.newList('SINGLE_LINKED', compareIds)
+    analyzer['Accidents'] = lt.newList('ARRAY_LIST', compareIds)
     analyzer['dateIndex'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareDates)
     analyzer['timeIndex'] = om.newMap(omaptype='RBT',
@@ -279,6 +281,21 @@ def getAccidentsBySeverity(analyzer, Date, Severity):
             return 0
     except:
         return 0
+def getAccidentsBeforeDate(analyzer,Date):
+    fecha_min=minKey(analyzer)
+    total=0
+    maxFecha=""
+    maxAc=0
+    while fecha_min<Date.date():
+        lst = om.get(analyzer['dateIndex'], fecha_min)
+        if lst!=None:
+            total+=listSize(lst["value"]["lstaccidents"])
+            if listSize(lst)>maxAc:
+                maxFecha=fecha_min
+                maxAc=listSize(lst)
+        fecha_min+= datetime.timedelta(days=1)
+        
+    return maxFecha,total
 
 #Req 3
 def getAccidentsbyrange(analyzer, inicialdate, finaldate):
@@ -294,7 +311,7 @@ def getAccidentsbyrange(analyzer, inicialdate, finaldate):
 
 """Inicio de Requerimento 4"""
 
-def getAccidentsByRange(analyzer,initialDate,finalDate):
+def getAccidentsByState(analyzer,initialDate,finalDate):
     """
     Retorna una 'estructura' con los crimenes dentro de un rango
     """
@@ -341,10 +358,7 @@ def count_states(statemap, list, checklist):
             
 def newStateCount(state):
     return {"State": state, "Count": 0}
-    
-
-"""Fin del requerimento 4"""
-
+#Fin Req 4
 #Requerimento 5
 def getAccidentsByTime(analyzer, initialTime, finalTime):
     
@@ -369,6 +383,27 @@ def getAccidentsByTime(analyzer, initialTime, finalTime):
         if m.get(accidents,"4") is not None:
             sev_4 += lt.size(me.getValue(m.get(accidents,"4"))["lstseverity"])
     return [sev_1,sev_2,sev_3,sev_4] 
+
+def getAccidentsBylocation(analyzer,t1,g1,r):
+    dic={0:0,1:0,2:0,3:0,4:0,5:0,6:0}
+    cant=0
+    iterator=it.newIterator(analyzer["Accidents"])
+    #for cada_accidente in analyzer["Accidents"]["elements"]:
+    while it.hasNext(iterator):
+        cada_accidente=it.next(iterator)
+        t2=float(cada_accidente["Start_Lat"])
+        g2=float(cada_accidente["Start_Lng"])
+        dis = 6371.01 * math.acos((math.sin(math.radians(t1))*math.sin(math.radians(t2)))+(math.cos(math.radians(t1))*math.cos(math.radians(t2))*math.cos(math.radians(g1-g2))))
+        if dis<=r:
+            cant+=1
+            fecha=datetime.datetime.strptime(cada_accidente['Start_Time'], '%Y-%m-%d %H:%M:%S')
+            dia=int(fecha.strftime("%w"))
+            dic[dia]+=1
+    return dic,cant
+
+
+
+
         
 
 
